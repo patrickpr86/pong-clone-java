@@ -1,3 +1,4 @@
+package pong;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -13,19 +14,24 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	
 
 	private static final long serialVersionUID = 1L;
-	public static int width = 240;
-	public static int height = 120;
-	public static int scale = 3;
+	public static int WIDTH = 160;
+	public static int HEIGHT = 120;
+	public static int SCALE = 3;
 	
-	public BufferedImage layer = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+	public BufferedImage layer = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 	
-	public Player player;
+	public static Player player;
+	public static Enemy enemy;
+	public static Ball ball;
 	
 	public Game() {
-		setPreferredSize(new Dimension(width*scale, height*scale));
+		setPreferredSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
 		this.addKeyListener(this);
 		
-		 player = new Player(100, height-10);
+		 player = new Player(100, HEIGHT - 5);
+		 enemy = new Enemy(100,0);
+		 ball = new Ball(100, HEIGHT / 2 - 1);
+		 
 	}
 	
 
@@ -48,6 +54,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public void update() {
 		
 		player.update();
+		enemy.update();
+		ball.update();
 		
 	}
 	
@@ -60,12 +68,14 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		}
 		Graphics g = layer.getGraphics();
 		g.setColor(Color.black);
-		g.fillRect(0,0, width, height);
+		g.fillRect(0,0, WIDTH, HEIGHT);
 		player.render(g);
+		enemy.render(g);
+		ball.render(g);
 		
 		g = bs.getDrawGraphics();
 		
-		g.drawImage(layer, 0, 0, width*scale, height*scale, null);
+		g.drawImage(layer, 0, 0, WIDTH*SCALE, HEIGHT*SCALE, null);
 		
 		bs.show();
 		
@@ -74,6 +84,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
 	@Override
 	public void run() {
+		requestFocus();
 		while(true) {
 			update();
 			render();
